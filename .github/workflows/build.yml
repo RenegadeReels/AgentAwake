@@ -34,6 +34,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" build/AgentAwake-macOS.zip \
-            --title "AgentAwake $GITHUB_REF_NAME" \
-            --notes "Download AgentAwake-macOS.zip, unzip it, and move AgentAwake.app to Applications. See the README for first-launch steps."
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" build/AgentAwake-macOS.zip --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" build/AgentAwake-macOS.zip \
+              --title "AgentAwake $GITHUB_REF_NAME" \
+              --notes "Download AgentAwake-macOS.zip, unzip it, and move AgentAwake.app to Applications. See the README for first-launch steps."
+          fi
